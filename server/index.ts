@@ -1,5 +1,5 @@
 import express, { RequestHandler } from "express";
-import { DB } from "./datastore";
+import { createPostHandlers, listPostHandlers } from "./handlers/postHandler";
 const app = express();
 
 const requestloggrMiddlware: RequestHandler = (req, res, next) => {
@@ -9,13 +9,7 @@ const requestloggrMiddlware: RequestHandler = (req, res, next) => {
 app.use(express.json());
 app.use(requestloggrMiddlware);
 
-app.get("/posts", (req, res) => {
-  res.send({ posts: DB.listPosts() });
-});
-app.post("/posts", (req, res) => {
-  const post = req.body;
-  DB.createPost(post);
-  res.sendStatus(200);
-});
+app.get("/posts", listPostHandlers);
+app.post("/posts", createPostHandlers);
 
-app.listen(3000);
+app.listen(6000);
