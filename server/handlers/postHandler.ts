@@ -1,16 +1,27 @@
+import {
+  CreatePostRequest,
+  CreatePostResponse,
+  ListPostRequest,
+  ListPostResponse,
+} from "../api";
 import { DB } from "../datastore";
 import { ExpressHandler, Post } from "../types";
 import crypto from "crypto";
 
-export const listPostHandlers: ExpressHandler<{}, {}> = (req, res) => {
+export const listPostHandlers: ExpressHandler<
+  ListPostRequest,
+  ListPostResponse
+> = (req, res) => {
   res.send({ posts: DB.listPosts() });
 };
-type CreatePostRequest = Pick<Post, "title" | "url" | "userId">;
-interface CreatePostResponse {}
+
 export const createPostHandlers: ExpressHandler<
   CreatePostRequest,
   CreatePostResponse
 > = (req, res) => {
+  if (!req.body.title) {
+    return res.status(400).send(`title is required `);
+  }
   if (!req.body.title || !req.body.url || !req.body.userId) {
     return res.sendStatus(400);
   }
