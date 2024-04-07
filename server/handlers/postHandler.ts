@@ -8,17 +8,20 @@ import { DB } from "../datastore";
 import { ExpressHandler, Post } from "../types";
 import crypto from "crypto";
 
-export const listPostHandlers: ExpressHandler<
+import { RequestHandler } from "express";
+
+export const listPostHandlers: RequestHandler<
   ListPostRequest,
   ListPostResponse
-> = (req, res) => {
-  res.send({ posts: DB.listPosts() });
+> = async (req, res) => {
+  const posts = await DB.listPost(); // Await the promise to get the array of posts
+  res.send({ posts });
 };
 
 export const createPostHandlers: ExpressHandler<
   CreatePostRequest,
   CreatePostResponse
-> = (req, res) => {
+> = async (req, res) => {
   if (!req.body.title) {
     return res.status(400).send(`title is required `);
   }
@@ -32,6 +35,6 @@ export const createPostHandlers: ExpressHandler<
     url: req.body.url,
     userId: req.body.userId,
   };
-  DB.createPost(post);
+  await DB.createPost(post);
   res.sendStatus(200);
 };

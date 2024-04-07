@@ -1,49 +1,70 @@
-import { Datastore } from "../";
-import { User, Post, Like, Comment } from "../../types";
-export class InMemoryDatastore implements Datastore {
-  private users: User[] = [];
-  private posts: Post[] = [];
-  private likes: Like[] = [];
-  private comments: Comment[] = [];
-  createUser(user: User): void {
-    this.users.push(user);
+import { User, Post, Comment, Like } from "../../types";
+import { Datastore } from "..";
+
+export class inMemoryDatastore implements Datastore {
+  getUserById(id: string): Promise<User | undefined> {
+    throw new Error("Method not implemented.");
   }
-  getUserByEmail(email: string): User | undefined {
-    return this.users.find((u) => u.email === email);
+  private user: User[] = [];
+  private post: Post[] = [];
+  private comment: Comment[] = [];
+  private like: Like[] = [];
+
+  createUser(user: User): Promise<void> {
+    this.user.push(user);
+    return Promise.resolve();
   }
-  getUserByUsername(userName: string): User | undefined {
-    return this.users.find((u) => u.username === userName);
+
+  getUserByEmail(email: string): Promise<User | undefined> {
+    return Promise.resolve(this.user.find((u) => u.email === email));
   }
-  listPosts(): Post[] {
-    return this.posts;
+
+  getUserByUsername(username: string): Promise<User | undefined> {
+    return Promise.resolve(this.user.find((u) => u.username === username));
   }
-  createPost(post: Post): void {
-    this.posts.push(post);
+
+  listPost(): Promise<Post[]> {
+    return Promise.resolve(this.post);
   }
-  getPost(id: string): Post | undefined {
-    return this.posts.find((p) => p.id === id);
+
+  createPost(post: Post): Promise<void> {
+    this.post.push(post);
+    return Promise.resolve();
   }
-  deletePost(id: string): void {
-    const index = this.posts.findIndex((p) => p.id === id);
+
+  getPost(id: string): Promise<Post | undefined> {
+    return Promise.resolve(this.post.find((p) => p.id === id));
+  }
+
+  deletePost(id: string): Promise<void> {
+    const index = this.post.findIndex((p) => p.id === id);
     if (index === -1) {
-      return;
+      return Promise.resolve();
     }
-    this.posts.splice(index, 1);
+    this.post.splice(index, 1);
+    return Promise.resolve();
   }
-  createLike(like: Like): void {
-    this.likes.push(like);
+
+  createComment(comment: Comment): Promise<void> {
+    this.comment.push(comment);
+    return Promise.resolve();
   }
-  createComment(comment: Comment): void {
-    this.comments.push(comment);
+
+  listComments(postId: string): Promise<Comment[]> {
+    return Promise.resolve(this.comment.filter((c) => c.postId === postId));
   }
-  listComments(postId: string): Comment[] {
-    return this.comments.filter((c) => c.postId === postId);
-  }
-  deleteComment(id: string): void {
-    const index = this.comments.findIndex((c) => c.id === id);
+
+  deleteComment(id: string): Promise<void> {
+    const index = this.comment.findIndex((c) => c.id === id);
     if (index === -1) {
-      return;
+      return Promise.resolve();
     }
-    this.comments.splice(index, 1);
+    this.comment.splice(index, 1);
+    return Promise.resolve();
+  }
+
+  createLike(like: Like): Promise<void> {
+    this.like.push(like);
+    return Promise.resolve();
   }
 }

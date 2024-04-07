@@ -1,5 +1,6 @@
 import express, { ErrorRequestHandler, RequestHandler } from "express";
 import { createPostHandlers, listPostHandlers } from "./handlers/postHandler";
+import asyncHandler from "express-async-handler";
 const app = express();
 
 const requestloggrMiddlware: RequestHandler = (req, res, next) => {
@@ -9,8 +10,8 @@ const requestloggrMiddlware: RequestHandler = (req, res, next) => {
 app.use(express.json());
 app.use(requestloggrMiddlware);
 
-app.get("/posts", listPostHandlers);
-app.post("/posts", createPostHandlers);
+app.get("/posts", asyncHandler(listPostHandlers));
+app.post("/posts", asyncHandler(createPostHandlers));
 export const errHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error("Uncaught exception:", err);
   return res
