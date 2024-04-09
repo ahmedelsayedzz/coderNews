@@ -4,7 +4,7 @@ import {
   ListPostRequest,
   ListPostResponse,
 } from "../api";
-import { DB } from "../datastore";
+import { db } from "../datastore";
 import { ExpressHandler, Post } from "../types";
 import crypto from "crypto";
 
@@ -14,7 +14,7 @@ export const listPostHandlers: RequestHandler<
   ListPostRequest,
   ListPostResponse
 > = async (req, res) => {
-  const posts = await DB.listPost(); // Await the promise to get the array of posts
+  const posts = await db.listPost(); // Await the promise to get the array of posts
   res.send({ posts });
 };
 
@@ -35,6 +35,6 @@ export const createPostHandlers: ExpressHandler<
     url: req.body.url,
     userId: req.body.userId,
   };
-  await DB.createPost(post);
+  await db.createPost(post);
   res.sendStatus(200);
 };
