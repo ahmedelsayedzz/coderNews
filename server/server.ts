@@ -15,6 +15,9 @@ import { authMiddleware } from "./middleware/authMiddleware";
   app.use(express.json());
   app.use(requestloggrMiddlware);
   //Public Endpoints
+  app.get("/healthz", (req, res) => {
+    res.send({ status: "✌️" });
+  });
   app.post("/v1/signup", asyncHandler(signUpHandler));
   app.post("/v1/signin", asyncHandler(SignInHandler));
   app.use(authMiddleware);
@@ -23,5 +26,5 @@ import { authMiddleware } from "./middleware/authMiddleware";
   app.post("/v1/posts", asyncHandler(createPostHandlers));
 
   app.use(errHandler);
-  app.listen(6000);
+  app.listen(process.env.PORT || 6000);
 })();
