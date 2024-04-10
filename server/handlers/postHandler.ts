@@ -23,7 +23,7 @@ export const createPostHandlers: ExpressHandler<
   CreatePostResponse
 > = async (req, res) => {
   if (!req.body.title) {
-    return res.status(400).send(`title is required `);
+    return res.status(400);
   }
   if (!req.body.title || !req.body.url || !req.body.userId) {
     return res.sendStatus(400);

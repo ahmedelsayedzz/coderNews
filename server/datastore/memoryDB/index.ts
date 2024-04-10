@@ -3,7 +3,7 @@ import { Datastore } from "..";
 
 export class inMemoryDatastore implements Datastore {
   getUserById(id: string): Promise<User | undefined> {
-    throw new Error("Method not implemented.");
+    return Promise.resolve(this.user.find((u) => u.id === id));
   }
   private user: User[] = [];
   private post: Post[] = [];

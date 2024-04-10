@@ -8,6 +8,7 @@ import {
 import { db } from "../datastore";
 import { ExpressHandler, User } from "../types";
 import crypto from "crypto";
+import { signJwt } from "../auth";
 export const signUpHandler: ExpressHandler<
   SignUpRequest,
   SignUpResponse
@@ -31,7 +32,8 @@ export const signUpHandler: ExpressHandler<
   };
 
   await db.createUser(user);
-  return res.sendStatus(200);
+  const jwt = signJwt({ userId: user.id });
+  return res.send({ jwt });
 };
 export const SignInHandler: ExpressHandler<
   SignInRequest,
@@ -46,11 +48,15 @@ export const SignInHandler: ExpressHandler<
   if (!existing || existing.password !== password) {
     return res.sendStatus(403);
   }
+  const jwt = signJwt({ userId: existing.id });
   return res.status(200).send({
-    email: existing.email,
-    firstName: existing.firstName,
-    lastName: existing.lastName,
-    id: existing.id,
-    username: existing.username,
+    user: {
+      email: existing.email,
+      firstName: existing.firstName,
+      lastName: existing.lastName,
+      id: existing.id,
+      username: existing.username,
+    },
+    jwt,
   });
 };
