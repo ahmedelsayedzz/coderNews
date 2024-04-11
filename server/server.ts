@@ -14,6 +14,7 @@ import { authMiddleware } from "./middleware/authMiddleware";
 import {
   createCommentHandler,
   deleteCommentHandler,
+  getCommentsHandler,
 } from "./handlers/commentHandler";
 import { createLikeHandler, getLikesHandler } from "./handlers/likeHandler";
 (async () => {
@@ -35,6 +36,7 @@ import { createLikeHandler, getLikesHandler } from "./handlers/likeHandler";
   app.delete("/v1/posts", asyncHandler(deletePostHandler));
   app.post("/v1/comments", asyncHandler(createCommentHandler));
   app.delete("/v1/comments", asyncHandler(deleteCommentHandler));
+  app.get("/v1/comments/:postId", asyncHandler(getCommentsHandler));
   app.post("/v1/likes", asyncHandler(createLikeHandler));
   app.get("/v1/likes/:postId", asyncHandler(getLikesHandler));
 

@@ -2,6 +2,12 @@ import { User, Post, Comment, Like } from "../../types";
 import { Datastore } from "..";
 
 export class inMemoryDatastore implements Datastore {
+  getcomments(postId: any): Number | PromiseLike<Number> {
+    throw new Error("Method not implemented.");
+  }
+  countComment(postId: string): Promise<number> {
+    throw new Error("Method not implemented.");
+  }
   getLikes(postId: string): Promise<number> {
     throw new Error("Method not implemented.");
   }

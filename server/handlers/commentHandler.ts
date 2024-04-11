@@ -1,8 +1,12 @@
 import {
+  CountCommentsRequest,
+  CountCommentsResponse,
   CreateCommentRequest,
   CreateCommentResponse,
   DeleteCommentRequest,
   DeleteCommentResponse,
+  GetCommentsRequest,
+  GetCommentsResponse,
 } from "../api";
 import { db } from "../datastore";
 import { ExpressHandler, Comment } from "../types";
@@ -42,4 +46,13 @@ export const deleteCommentHandler: ExpressHandler<
     return res.status(400).send({ error: "No comment ID" });
   await db.deleteComment(req.body.commentId);
   return res.sendStatus(200);
+};
+export const getCommentsHandler: ExpressHandler<
+  CountCommentsRequest,
+  CountCommentsResponse
+> = async (request, response) => {
+  let params: any = request.params;
+  const count: Number = await db.countComment(params.postId);
+  console.log(count);
+  return response.send({ comments: count });
 };

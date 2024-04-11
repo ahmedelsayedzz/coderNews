@@ -39,12 +39,17 @@ export type GetCommentsRequest = { postId: string | undefined };
 export interface GetCommentsResponse {
   comments: Comment[];
 }
+export type CountCommentsRequest = { postId: string };
+export interface CountCommentsResponse {
+  comments: Number;
+}
+
 export type DeleteCommentRequest = { commentId: string };
 export type DeleteCommentResponse = {};
 
-export type CreateLikeRequest = Like;
-export interface CreateLikeResponse {}
 export type GetLikesRequest = { postId: string };
 export interface GetLikesResponse {
   likes: Number;
 }
+export type CreateLikeRequest = Like;
+export interface CreateLikeResponse {}

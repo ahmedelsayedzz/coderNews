@@ -35,5 +35,6 @@ export const getLikesHandler: ExpressHandler<
 > = async (request, response) => {
   let params: any = request.params;
   const count: Number = await db.getLikes(params.postId);
+  console.log(count);
   return response.send({ likes: count });
 };

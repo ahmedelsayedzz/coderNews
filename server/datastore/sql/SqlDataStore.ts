@@ -5,14 +5,6 @@ import { open as sqliteOpen, Database } from "sqlite";
 import path from "path";
 
 export class SqlDataStore implements Datastore {
-  async getLikes(postId: string): Promise<number> {
-    let result = await this.db.get<{ count: number }>(
-      "SELECT COUNT(*) as count FROM likes WHERE postId = ?",
-      postId
-    );
-    return result?.count ?? 0;
-  }
-
   private db!: Database<sqlite3.Database, sqlite3.Statement>;
   public async openDb() {
     // open the database
@@ -95,6 +87,7 @@ export class SqlDataStore implements Datastore {
   async deleteComment(id: string): Promise<void> {
     await this.db.run("DELETE FROM comments WHERE id = ?", id);
   }
+
   async createLike(like: Like): Promise<void> {
     await this.db.run(
       "INSERT INTO likes(userId, postId) VALUES(?,?)",
@@ -108,5 +101,42 @@ export class SqlDataStore implements Datastore {
       like.userId,
       like.postId
     );
+  }
+
+  async getLikes(postId: string): Promise<number> {
+    try {
+      // Execute SQL query to count likes for the given postId
+      const result = await this.db.get<{ count: number }>(
+        "SELECT COUNT(*) AS count FROM Likes WHERE postId = ?",
+        postId
+      );
+
+      // Extract the count from the query result or default to 0 if no likes found
+      const count = result?.count ?? 0;
+
+      return count;
+    } catch (error) {
+      // Handle any errors that occur during the database operation
+      console.error("Error fetching likes:", error);
+      throw error; // Propagate the error to the caller
+    }
+  }
+  async countComment(postId: string): Promise<number> {
+    try {
+      // Execute SQL query to count likes for the given postId
+      const result = await this.db.get<{ count: number }>(
+        "SELECT COUNT(*) AS count FROM Comments WHERE postId = ?",
+        postId
+      );
+
+      // Extract the count from the query result or default to 0 if no likes found
+      const count = result?.count ?? 0;
+
+      return count;
+    } catch (error) {
+      // Handle any errors that occur during the database operation
+      console.error("Error fetching likes:", error);
+      throw error; // Propagate the error to the caller
+    }
   }
 }
