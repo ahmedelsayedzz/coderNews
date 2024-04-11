@@ -18,7 +18,13 @@ export const createLikeHandler: ExpressHandler<
   if (!req.body.userId) {
     return res.status(400).send({ error: "No User Id" });
   }
-
+  let found = await db.exists({
+    postId: req.body.postId,
+    userId: req.body.userId,
+  });
+  if (found) {
+    return res.status(400).send({ error: `Duplicate like` });
+  }
   //Valid like Object
   const likeForInsert: Like = {
     postId: req.body.postId,

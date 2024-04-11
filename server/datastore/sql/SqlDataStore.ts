@@ -139,4 +139,13 @@ export class SqlDataStore implements Datastore {
       throw error; // Propagate the error to the caller
     }
   }
+  async exists(like: Like): Promise<boolean> {
+    let awaitResult = await this.db.get<number>(
+      'SELECT 1 FROM likes WHERE postId = ? and userId = ?',
+      like.postId,
+      like.userId
+    );
+    let val: boolean = awaitResult === undefined ? false : true;
+    return val;
+  }
 }
