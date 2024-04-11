@@ -5,6 +5,14 @@ import { open as sqliteOpen, Database } from "sqlite";
 import path from "path";
 
 export class SqlDataStore implements Datastore {
+  async getLikes(postId: string): Promise<number> {
+    let result = await this.db.get<{ count: number }>(
+      "SELECT COUNT(*) as count FROM likes WHERE postId = ?",
+      postId
+    );
+    return result?.count ?? 0;
+  }
+
   private db!: Database<sqlite3.Database, sqlite3.Statement>;
   public async openDb() {
     // open the database
@@ -53,22 +61,52 @@ export class SqlDataStore implements Datastore {
       post.userId
     );
   }
-  getPost(id: string): Promise<Post | undefined> {
-    throw new Error("Method not implemented.");
+
+  async getPost(id: string, userId: string): Promise<Post | undefined> {
+    return await this.db.get<Post>(
+      `SELECT *, EXISTS(
+        SELECT 1 FROM likes WHERE likes.postId = ? AND likes.userId = ?
+      ) as liked FROM posts WHERE id = ?`,
+      id,
+      userId,
+      id
+    );
   }
-  deletePost(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async deletePost(id: string): Promise<void> {
+    await this.db.run("Delete FROM posts WHERE id = ?", id);
   }
-  createLike(like: Like): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async createComment(comment: Comment): Promise<void> {
+    await this.db.run(
+      "INSERT INTO comments(id, userId, postId, comment, postedAt) VALUES(?,?,?,?,?)",
+      comment.id,
+      comment.userId,
+      comment.postId,
+      comment.comment,
+      comment.postedAt
+    );
   }
-  createComment(comment: Comment): Promise<void> {
-    throw new Error("Method not implemented.");
+  async listComments(postId: string): Promise<Comment[]> {
+    return await this.db.all<Comment[]>(
+      "SELECT * FROM comments WHERE postId = ? ORDER BY postedAt DESC",
+      postId
+    );
   }
-  listComments(postId: string): Promise<Comment[]> {
-    throw new Error("Method not implemented.");
+  async deleteComment(id: string): Promise<void> {
+    await this.db.run("DELETE FROM comments WHERE id = ?", id);
   }
-  deleteComment(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async createLike(like: Like): Promise<void> {
+    await this.db.run(
+      "INSERT INTO likes(userId, postId) VALUES(?,?)",
+      like.userId,
+      like.postId
+    );
+  }
+  async deleteLike(like: Like): Promise<void> {
+    await this.db.run(
+      "DELETE FROM likes WHERE userId = ? AND postId = ?",
+      like.userId,
+      like.postId
+    );
   }
 }

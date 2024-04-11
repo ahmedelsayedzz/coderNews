@@ -2,6 +2,10 @@ import { User, Post, Comment, Like } from "../../types";
 import { Datastore } from "..";
 
 export class inMemoryDatastore implements Datastore {
+  getLikes(postId: string): Promise<number> {
+    throw new Error("Method not implemented.");
+  }
+
   getUserById(id: string): Promise<User | undefined> {
     return Promise.resolve(this.user.find((u) => u.id === id));
   }

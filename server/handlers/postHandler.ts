@@ -1,6 +1,8 @@
 import {
   CreatePostRequest,
   CreatePostResponse,
+  DeletePostRequest,
+  DeletePostResponse,
   ListPostRequest,
   ListPostResponse,
 } from "../api";
@@ -37,4 +39,13 @@ export const createPostHandlers: ExpressHandler<
   };
   await db.createPost(post);
   res.sendStatus(200);
+};
+export const deletePostHandler: ExpressHandler<
+  DeletePostRequest,
+  DeletePostResponse
+> = async (req, res) => {
+  if (req.body.postId === "" || req.body.postId === undefined)
+    return res.sendStatus(404);
+  db.deletePost(req.body.postId);
+  return res.sendStatus(200);
 };
